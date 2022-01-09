@@ -1,16 +1,20 @@
+#include <cuda_device_runtime_api.h>
 #include <iostream>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+
+#define BLOCK_SIZE 256
 
 using namespace std;
 
 const std::string CONFIG_PATH = "./config.json";
 
 // temporary values, will be set by readConfig()
-uint32_t MAX_KERNELS = -1;
-uint16_t OUTGOING_PORT_ADDR = -1;
+uint32_t MAX_KERNELS = 0;
+uint16_t OUTGOING_PORT_ADDR = 0;
 std::string WEB_ROOT_DIR = "/dev/null";
 
+__host__
 void readConfig(std::string configPath) {
 
     boost::property_tree::ptree loadedPTreeRoot;
@@ -21,18 +25,26 @@ void readConfig(std::string configPath) {
     WEB_ROOT_DIR = loadedPTreeRoot.get_child("web_root").get_value<std::string>();
 }
 
+__global__
+void webKernel() {
+
+    const uint32_t THREAD_ID = (blockIdx.x * blockDim.x) + threadIdx.x;
+}
+
+__host__
 int main() {
 
-    std::cout << "[main.cu] READING CONFIGURATION FILE" << endl;
-
     // read the config file
+    std::cout << "[main.cu] READING CONFIGURATION FILE" << endl;
     readConfig(CONFIG_PATH);
 
-    std::cout << "[main.cu] STARTING SERVER ON PORT " << std::to_string(OUTGOING_PORT_ADDR) << " WITH " << std::to_string(MAX_KERNELS) << " THREADS." << endl;
-
     // spawn the kernels
+    std::cout << "[main.cu] STARTING SERVER ON PORT " << std::to_string(OUTGOING_PORT_ADDR) << " WITH " << std::to_string(MAX_KERNELS) << " THREADS USING THE WEB ROOT DIR " << WEB_ROOT_DIR << endl;
+    webKernel<<<BLOCK_SIZE * ((MAX_KERNELS / BLOCK_SIZE) + 1), BLOCK_SIZE>>>();
 
-    std::cout << "[main.cu] SPAWNING " << std::to_string(MAX_KERNELS) << " KERNELS FOR WEB ROOT " << WEB_ROOT_DIR << endl;
+    // handle a graceful exit
+    cudaDeviceSynchronize();
+    std::cout << "[main.cu] EXITED GRACEFULLY";
 
     return 0;
 }
