@@ -9,7 +9,7 @@
 
 ## Setup Instructions:
 
-- Clone this repo (`git clone [REPO_URL]`).
+- Clone this repo (`git clone https://github.com/katznboyz1/cuda-web-server`).
 - Configure the server via the `config.json` file.
 - Compile the contents (`INSTRUCTIONS_INCOMPLETE`).
 - Run the executable (`INSTRUCTIONS_INCOMPLETE`).
