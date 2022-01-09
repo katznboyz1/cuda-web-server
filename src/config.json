@@ -1,5 +1,5 @@
 {
     "port":8194,
     "threads":2147483647,
-    "web_src":"../web"
+    "web_root":"../web"
 }

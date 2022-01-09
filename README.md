@@ -5,7 +5,7 @@
 ## Requirements:
 
 - CUDA capable NVIDIA GPU with at least 4GB of VRAM and preferrably 10 series and greater.
-- AMD64 Windows/Linux OS.
+- AMD64 Linux OS (tested on Ubuntu Server 20.04).
 
 ## Setup Instructions:
 
